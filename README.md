@@ -1,35 +1,32 @@
 # Игра "Морской бой"
-## Собрать проект с vcpkg для Linux
+## Собрать проект с помощью conan для Linux
 
-#### Установить vcpkg:
+#### Установить conan:
 ```console
-$ git clone https://github.com/Microsoft/vcpkg.git
-$ ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
+$ python3 -m venv .venv
+$ source .venv/bin/activate
+$ pip install conan
+$ conan profile detect --force
 ```
 
 #### Установить sfml 2 и gtest:
 ```console
-$ ./vcpkg/vcpkg install sfml
-$ ./vcpkg/vcpkg install gtest
-```
-
-#### Получить параметры для сборки проекта:
-```console
-$ ./vcpkg/vcpkg integrate install
+$ conan install . --output-folder=build --build=missing
 ```
 
 #### Сборка проекта:
 ```console
-$ cmake -B build -S . "{параметры из предыдущей команды}"
-$ cmake --build build
+$ cd build
+$ cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+$ cmake --build .
 ```
 
 #### Запуск игры:
 ```console
-$ ./build/sea_battle
+$ ./sea_battle
 ```
 
 #### Запуск тестов
 ```console
-$ ./build/sea_battle_test
+$ ./sea_battle_test
 ```

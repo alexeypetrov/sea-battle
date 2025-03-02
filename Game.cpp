@@ -3,7 +3,7 @@
 namespace sea_battle {
 Game::Game() {
     addFields();
-    m_font.loadFromFile("fonts/Ubuntu-Regular.ttf");
+    m_font.loadFromFile("../fonts/Ubuntu-Regular.ttf");
     addMenu("New game", 1100, 50);
     addMenu("Exit", 1100, 100);
     m_player_1.initScorePlayer(m_font, 50, 550);

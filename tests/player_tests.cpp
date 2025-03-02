@@ -19,7 +19,7 @@ class TestPlayer : public ::testing::Test {
    protected:
     void SetUp() {
         sf::Font font;
-        font.loadFromFile("fonts/Ubuntu-Regular.ttf");
+        font.loadFromFile("../fonts/Ubuntu-Regular.ttf");
         player.initScorePlayer(font, 0, 0);
     }
     sea_battle::Player<TestRandomGenerator> player{};
