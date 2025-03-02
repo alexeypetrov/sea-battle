@@ -20,7 +20,7 @@ add_executable(sea_battle_test
 )
 
 find_package(GTest CONFIG REQUIRED)
-find_package(SFML COMPONENTS system window graphics audio CONFIG REQUIRED)
+find_package(SFML 2 COMPONENTS system window graphics audio CONFIG REQUIRED)
 
 target_link_libraries(sea_battle sfml-system sfml-network sfml-graphics sfml-window sfml-audio seaBattleLib)
 target_link_libraries(sea_battle_test PRIVATE GTest::gtest GTest::gtest_main sfml-system sfml-network sfml-graphics sfml-window sfml-audio seaBattleLib)

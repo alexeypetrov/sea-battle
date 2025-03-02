@@ -7,7 +7,7 @@ $ git clone https://github.com/Microsoft/vcpkg.git
 $ ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
 ```
 
-#### Установить sfml и gtest:
+#### Установить sfml 2 и gtest:
 ```console
 $ ./vcpkg/vcpkg install sfml
 $ ./vcpkg/vcpkg install gtest
