@@ -3,57 +3,57 @@
 
 namespace sea_battle {
 Application::Application(const char* name)
-    : m_window{sf::VideoMode(1300, 800), name, sf::Style::Close} {}
+    : m_window_{sf::VideoMode(1300, 800), name, sf::Style::Close} {}
 
-void Application::run(Game& game) {
-    bool isInit = true;
-    while (m_window.isOpen()) {
-        processEvents(game);
-        if (isInit) {
-            drawGame(game);
-            isInit = false;
+void Application::Run(Game& game) {
+    bool is_init = true;
+    while (m_window_.isOpen()) {
+        ProcessEvents(game);
+        if (is_init) {
+            DrawGame(game);
+            is_init = false;
         }
     }
 }
 
-void Application::processEvents(Game& game) {
+void Application::ProcessEvents(Game& game) {
     sf::Event event{};
-    while (m_window.pollEvent(event)) {
+    while (m_window_.pollEvent(event)) {
         if (event.type == sf::Event::EventType::Closed) {
-            m_window.close();
+            m_window_.close();
         }
         if (event.type == sf::Event::MouseButtonPressed &&
             event.mouseButton.button == sf::Mouse::Left) {
             if (event.mouseButton.x > 1100 && event.mouseButton.y > 50 &&
                 event.mouseButton.y < 75) {
-                game.restart();
-                drawGame(game);
+                game.Restart();
+                DrawGame(game);
             }
             if (event.mouseButton.x > 1100 && event.mouseButton.y > 100 &&
                 event.mouseButton.y < 125) {
-                m_window.close();
+                m_window_.close();
             }
             if (event.mouseButton.x < 500 && event.mouseButton.y < 500) {
-                game.clickButton(event.mouseButton.x, event.mouseButton.y);
-                drawGame(game);
+                game.ClickButton(event.mouseButton.x, event.mouseButton.y);
+                DrawGame(game);
             }
         }
     }
 }
 
-void Application::drawGame(const Game& game) {
-    m_window.clear();
-    for (const auto& field : game.getField1()) {
-        m_window.draw(field);
+void Application::DrawGame(const Game& game) {
+    m_window_.clear();
+    for (const auto& field : game.GetField1()) {
+        m_window_.draw(field);
     }
-    for (const auto& field : game.getField2()) {
-        m_window.draw(field);
+    for (const auto& field : game.GetField2()) {
+        m_window_.draw(field);
     }
-    for (const auto& menu : game.getMenu()) {
-        m_window.draw(menu);
+    for (const auto& menu : game.GetMenu()) {
+        m_window_.draw(menu);
     }
-    m_window.draw(game.getScorePlayer1());
-    m_window.draw(game.getScorePlayer2());
-    m_window.display();
+    m_window_.draw(game.GetScorePlayer1());
+    m_window_.draw(game.GetScorePlayer2());
+    m_window_.display();
 }
 }  // namespace sea_battle

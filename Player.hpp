@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <mutex>
@@ -12,51 +13,56 @@ namespace sea_battle {
 template <typename T>
 class Player {
    public:
-    inline static const std::string SCORE_TEXT_PREFIX{"Score: "};
-    inline static const std::string DEFAULT_SCORE{"0"};
-    inline static const std::string WIN_TEXT_POSTFIX{" WIN!"};
-    static const size_t MAX_SCORE = 20;
+    inline static const std::string kScoreTextPrefix{"Score: "};
+    inline static const std::string kDefaultScore{"0"};
+    inline static const std::string kWinTextPostfix{" WIN!"};
+    static const std::size_t kMaxScore = 20;
     Player() = default;
-    void restart() {
-        m_sea_map = m_sea_map_next;
-        std::thread prepareSeaMap([&]() {
+    void Restart() {
+        m_sea_map_ = m_sea_map_next_;
+        std::thread prepare_sea_map([&]() {
             try {
-                SeaMap seaMap(std::make_unique<T>(SeaMap::MAX_FIELDS));
-                seaMap.createMap();
-                std::lock_guard l(mutex);
-                m_sea_map_next = std::move(seaMap);
+                SeaMap sea_map(std::make_unique<T>(SeaMap::kMaxFields));
+                sea_map.CreateMap();
+                std::lock_guard lock(mutex_);
+                m_sea_map_next_ = std::move(sea_map);
             } catch (...) {
                 std::cerr << "Error generate sea map" << std::endl;
             }
         });
-        prepareSeaMap.detach();
-        m_score_text.setString(SCORE_TEXT_PREFIX + DEFAULT_SCORE);
-        m_score = 0;
+        prepare_sea_map.detach();
+        m_score_text_.setString(kScoreTextPrefix + kDefaultScore);
+        m_score_ = 0;
     }
-    void increaseScore() {
-        ++m_score;
-        std::string scoreFullText = SCORE_TEXT_PREFIX + std::to_string(m_score);
-        if (m_score == MAX_SCORE) {
-            scoreFullText += WIN_TEXT_POSTFIX;
+    void IncreaseScore() {
+        ++m_score_;
+        std::string score_full_text =
+            kScoreTextPrefix + std::to_string(m_score_);
+        if (m_score_ == kMaxScore) {
+            score_full_text += kWinTextPostfix;
         }
-        m_score_text.setString(scoreFullText);
+        m_score_text_.setString(score_full_text);
     }
-    Status getSeaMapFieldStatus(size_t i) { return m_sea_map[i]; }
-    Status fire(size_t i) { return m_sea_map.checkFieldStatus(i); }
-    sf::Text getScore() const { return m_score_text; }
-    void initScorePlayer(sf::Font& font, int x, int y) {
-        m_score_text.setFont(font);
-        m_score_text.setString(SCORE_TEXT_PREFIX + DEFAULT_SCORE);
-        m_score_text.setPosition(x, y);
-        m_score_text.setCharacterSize(25);
-        m_score_text.setFillColor(sf::Color::Green);
+    auto GetSeaMapFieldStatus(std::size_t index) -> Status {
+        return m_sea_map_[index];
+    }
+    auto Fire(std::size_t index) -> Status {
+        return m_sea_map_.CheckFieldStatus(index);
+    }
+    [[nodiscard]] auto GetScore() const -> sf::Text { return m_score_text_; }
+    void InitScorePlayer(sf::Font& font, int xPosition, int yPosition) {
+        m_score_text_.setFont(font);
+        m_score_text_.setString(kScoreTextPrefix + kDefaultScore);
+        m_score_text_.setPosition(xPosition, yPosition);
+        m_score_text_.setCharacterSize(25);
+        m_score_text_.setFillColor(sf::Color::Green);
     }
 
    private:
-    SeaMap m_sea_map{std::make_unique<T>(SeaMap::MAX_FIELDS)};
-    SeaMap m_sea_map_next{std::make_unique<T>(SeaMap::MAX_FIELDS)};
-    int m_score = 0;
-    sf::Text m_score_text;
-    std::mutex mutex;
+    SeaMap m_sea_map_{std::make_unique<T>(SeaMap::kMaxFields)};
+    SeaMap m_sea_map_next_{std::make_unique<T>(SeaMap::kMaxFields)};
+    int m_score_ = 0;
+    sf::Text m_score_text_;
+    std::mutex mutex_;
 };
 }  // namespace sea_battle

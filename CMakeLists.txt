@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(lib)
 
 add_executable(sea_battle
-    SeaBattle.cpp
+    main.cpp
     SeaMap.cpp
     Application.cpp
     Game.cpp
@@ -33,7 +33,7 @@ target_compile_options(sea_battle PRIVATE -Wall -Wextra -Wpedantic)
 find_program(CLANG_FORMAT "clang-format")
 if (CLANG_FORMAT)
     set(SOURCES
-        SeaBattle.cpp
+        main.cpp
         SeaMap.cpp
         SeaMap.hpp
         Player.hpp

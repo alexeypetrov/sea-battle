@@ -1,37 +1,38 @@
 #include "Game.hpp"
+#include <cstdlib>
 
 namespace sea_battle {
 Game::Game() {
-    addFields();
-    m_font.loadFromFile("../fonts/Ubuntu-Regular.ttf");
-    addMenu("New game", 1100, 50);
-    addMenu("Exit", 1100, 100);
-    m_player_1.initScorePlayer(m_font, 50, 550);
-    m_player_2.initScorePlayer(m_font, 600, 550);
+    AddFields();
+    m_font_.loadFromFile("../fonts/Ubuntu-Regular.ttf");
+    AddMenu("New game", 1100, 50);
+    AddMenu("Exit", 1100, 100);
+    m_player_1_.InitScorePlayer(m_font_, 50, 550);
+    m_player_2_.InitScorePlayer(m_font_, 600, 550);
 }
 
-std::vector<sf::RectangleShape> Game::getField1() const {
-    return m_field_1;
+[[nodiscard]] auto Game::GetField1() const -> std::vector<sf::RectangleShape> {
+    return m_field_1_;
 }
 
-std::vector<sf::RectangleShape> Game::getField2() const {
-    return m_field_2;
+[[nodiscard]] auto Game::GetField2() const -> std::vector<sf::RectangleShape> {
+    return m_field_2_;
 }
 
-sf::Text Game::getScorePlayer1() const {
-    return m_player_1.getScore();
+[[nodiscard]] auto Game::GetScorePlayer1() const -> sf::Text {
+    return m_player_1_.GetScore();
 }
 
-sf::Text Game::getScorePlayer2() const {
-    return m_player_2.getScore();
+[[nodiscard]] auto Game::GetScorePlayer2() const -> sf::Text {
+    return m_player_2_.GetScore();
 }
 
-std::vector<sf::Text> Game::getMenu() const {
-    return m_menu;
+[[nodiscard]] auto Game::GetMenu() const -> std::vector<sf::Text> {
+    return m_menu_;
 }
 
-void Game::addFields() {
-    m_field_1.clear();
+void Game::AddFields() {
+    m_field_1_.clear();
     for (int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
             sf::RectangleShape box;
@@ -40,65 +41,66 @@ void Game::addFields() {
             box.setFillColor(sf::Color::White);
             box.setOutlineColor(sf::Color::Blue);
             box.setOutlineThickness(1);
-            m_field_1.push_back(box);
+            m_field_1_.push_back(box);
         }
     }
-    m_field_2.clear();
+    m_field_2_.clear();
     for (int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
             sf::RectangleShape box;
             box.setPosition(i * 50 + 550, j * 50);
             box.setSize(sf::Vector2f(50, 50));
-            if (m_player_2.getSeaMapFieldStatus(i * 10 + j) == Status::Empty) {
+            if (m_player_2_.GetSeaMapFieldStatus(i * 10 + j) ==
+                Status::kEmpty) {
                 box.setFillColor(sf::Color::White);
             } else {
                 box.setFillColor(sf::Color::Red);
             }
             box.setOutlineColor(sf::Color::Blue);
             box.setOutlineThickness(1);
-            m_field_2.push_back(box);
+            m_field_2_.push_back(box);
         }
     }
 }
 
-void Game::addMenu(const std::string& text, int x, int y) {
-    sf::Text menuText;
-    menuText.setFont(m_font);
-    menuText.setPosition(x, y);
-    menuText.setString(text);
-    menuText.setCharacterSize(25);
-    menuText.setFillColor(sf::Color::Green);
-    m_menu.push_back(menuText);
+void Game::AddMenu(const std::string& text, int xPosition, int yPosition) {
+    sf::Text menu_text;
+    menu_text.setFont(m_font_);
+    menu_text.setPosition(xPosition, yPosition);
+    menu_text.setString(text);
+    menu_text.setCharacterSize(25);
+    menu_text.setFillColor(sf::Color::Green);
+    m_menu_.push_back(menu_text);
 }
 
-void Game::clickButton(const int x, const int y) {
-    int num = std::lround(x / 50 * 10) + std::lround(y / 50);
-    if (m_player_1.getSeaMapFieldStatus(num) == Status::Killed ||
-        m_player_1.getSeaMapFieldStatus(num) == Status::Checked) {
+void Game::ClickButton(int xPosition, int yPosition) {
+    int num = std::lround(xPosition / 50 * 10) + std::lround(yPosition / 50);
+    if (m_player_1_.GetSeaMapFieldStatus(num) == Status::kKilled ||
+        m_player_1_.GetSeaMapFieldStatus(num) == Status::kChecked) {
         return;
     }
-    if (m_player_1.fire(num) == Status::Killed) {
-        m_player_1.increaseScore();
-        m_field_1[num].setFillColor(sf::Color::Black);
+    if (m_player_1_.Fire(num) == Status::kKilled) {
+        m_player_1_.IncreaseScore();
+        m_field_1_[num].setFillColor(sf::Color::Black);
     } else {
-        m_field_1[num].setFillColor(sf::Color::Blue);
+        m_field_1_[num].setFillColor(sf::Color::Blue);
     }
-    int randomNum = 0;
+    int random_num = 0;
     do {
-        randomNum = std::rand() % SeaMap::MAX_FIELDS;
-    } while (m_player_2.getSeaMapFieldStatus(randomNum) != Status::Empty &&
-             m_player_2.getSeaMapFieldStatus(randomNum) != Status::Exists);
-    if (m_player_2.fire(randomNum) == Status::Killed) {
-        m_player_2.increaseScore();
-        m_field_2[randomNum].setFillColor(sf::Color::Black);
+        random_num = std::rand() % SeaMap::kMaxFields;
+    } while (m_player_2_.GetSeaMapFieldStatus(random_num) != Status::kEmpty &&
+             m_player_2_.GetSeaMapFieldStatus(random_num) != Status::kExists);
+    if (m_player_2_.Fire(random_num) == Status::kKilled) {
+        m_player_2_.IncreaseScore();
+        m_field_2_[random_num].setFillColor(sf::Color::Black);
     } else {
-        m_field_2[randomNum].setFillColor(sf::Color::Blue);
+        m_field_2_[random_num].setFillColor(sf::Color::Blue);
     }
 }
 
-void Game::restart() {
-    m_player_1.restart();
-    m_player_2.restart();
-    addFields();
+void Game::Restart() {
+    m_player_1_.Restart();
+    m_player_2_.Restart();
+    AddFields();
 }
 }  // namespace sea_battle

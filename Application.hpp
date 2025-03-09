@@ -6,14 +6,12 @@
 namespace sea_battle {
 class Application {
    public:
-    Application(const char* name);
-    void run(Game& game);
+    explicit Application(const char* name);
+    void Run(Game& game);
 
    private:
-    void processEvents(Game& game);
-    void drawGame(const Game& game);
-
-   private:
-    sf::RenderWindow m_window;
+    void ProcessEvents(Game& game);
+    void DrawGame(const Game& game);
+    sf::RenderWindow m_window_;
 };
 }  // namespace sea_battle

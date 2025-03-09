@@ -1,51 +1,51 @@
 #include "SeaMap.hpp"
-#include <iostream>
+#include <cstddef>
 #include <vector>
 
 namespace sea_battle {
 SeaMap::SeaMap(
     std::unique_ptr<sea_battle_library::IRandomGenerator>&& randomGenerator) {
-    random_generator = std::move(randomGenerator);
-    createMap();
+    random_generator_ = std::move(randomGenerator);
+    CreateMap();
 }
-SeaMap& SeaMap::operator=(const SeaMap& other) {
-    m_data = other.m_data;
+auto SeaMap::operator=(const SeaMap& other) -> SeaMap& {
+    m_data_ = other.m_data_;
     return *this;
 };
-SeaMap& SeaMap::operator=(SeaMap&& other) noexcept {
+auto SeaMap::operator=(SeaMap&& other) noexcept -> SeaMap& {
     if (this != &other) {
-        m_data = other.m_data;
+        m_data_ = other.m_data_;
     }
     return *this;
 };
-void SeaMap::createMap() {
-    for (int i = 0; i < MAX_FIELDS; ++i) {
-        m_data[i] = Status::Empty;
+void SeaMap::CreateMap() {
+    for (int i = 0; i < kMaxFields; ++i) {
+        m_data_[i] = Status::kEmpty;
     }
-    generate();
+    Generate();
 }
 
-Status SeaMap::checkFieldStatus(int position) {
-    if (m_data[position] == Status::Exists) {
-        m_data[position] = Status::Killed;
+auto SeaMap::CheckFieldStatus(int position) -> Status {
+    if (m_data_[position] == Status::kExists) {
+        m_data_[position] = Status::kKilled;
     }
-    if (m_data[position] == Status::Empty) {
-        m_data[position] = Status::Checked;
+    if (m_data_[position] == Status::kEmpty) {
+        m_data_[position] = Status::kChecked;
     }
-    return m_data[position];
+    return m_data_[position];
 }
 
-Status SeaMap::operator[](size_t i) const {
-    return m_data[i];
+auto SeaMap::operator[](size_t index) const -> Status {
+    return m_data_[index];
 }
 
-void SeaMap::generate() {
-    for (const Boat& boat : m_boats) {
+void SeaMap::Generate() {
+    for (const Boat& boat : m_boats_) {
         for (int i = 0; i < boat.count; ++i) {
             bool isNotSet = true;
             do {
-                int position = random_generator->getNumber();
-                if (SeaMap::addBoat(position, boat.length)) {
+                int position = random_generator_->GetNumber();
+                if (SeaMap::AddBoat(position, boat.length)) {
                     isNotSet = false;
                 }
             } while (isNotSet);
@@ -53,48 +53,48 @@ void SeaMap::generate() {
     }
 }
 
-bool SeaMap::addBoat(int position, int boatLength) {
-    int stepX = (position % ROW_LENGTH > ROW_LENGTH / 2) ? -1 : 1;
-    int stepY =
-        (position % MAX_FIELDS > MAX_FIELDS / 2) ? -ROW_LENGTH : ROW_LENGTH;
-    int step = random_generator->getBoolean() ? stepX : stepY;
-    std::vector<int> checkPositions;
+auto SeaMap::AddBoat(int position, int boatLength) -> bool {
+    const int step_x = (position % kRowLength > kRowLength / 2) ? -1 : 1;
+    const int step_y =
+        (position % kMaxFields > kMaxFields / 2) ? -kRowLength : kRowLength;
+    const int step = random_generator_->GetBoolean() ? step_x : step_y;
+    std::vector<int> check_positions;
     do {
-        if (!SeaMap::checkEmptyField(position)) {
+        if (!SeaMap::CheckEmptyField(position)) {
             return false;
         }
-        checkPositions.push_back(position);
+        check_positions.push_back(position);
         position += step;
         --boatLength;
     } while (boatLength > 0);
-    for (auto cp : checkPositions) {
-        m_data[cp] = Status::Exists;
+    for (auto cp : check_positions) {
+        m_data_[cp] = Status::kExists;
     }
 
     return true;
 }
 
-bool SeaMap::checkEmptyField(int position) {
-    int leftPosition = position - 1;
-    if (position % ROW_LENGTH == 0) {
-        leftPosition = position;
+auto SeaMap::CheckEmptyField(int position) -> bool {
+    int left_position = position - 1;
+    if (position % kRowLength == 0) {
+        left_position = position;
     }
-    int rightPosition = position + 1;
-    if (position % ROW_LENGTH == ROW_LENGTH - 1) {
-        rightPosition = position;
+    int right_position = position + 1;
+    if (position % kRowLength == kRowLength - 1) {
+        right_position = position;
     }
-    int topPosition = -ROW_LENGTH;
-    if (position < ROW_LENGTH) {
-        topPosition = 0;
+    int top_position = -kRowLength;
+    if (position < kRowLength) {
+        top_position = 0;
     }
-    int bottomPosition = ROW_LENGTH;
-    if (position > MAX_FIELDS - ROW_LENGTH) {
-        bottomPosition = 0;
+    int bottom_position = kRowLength;
+    if (position > kMaxFields - kRowLength) {
+        bottom_position = 0;
     }
-    for (int i = leftPosition; i <= rightPosition; ++i) {
-        for (int j = i + topPosition; j <= i + bottomPosition;
-             j = j + ROW_LENGTH) {
-            if (m_data[j] != Status::Empty) {
+    for (int i = left_position; i <= right_position; ++i) {
+        for (int j = i + top_position; j <= i + bottom_position;
+             j = j + kRowLength) {
+            if (m_data_[j] != Status::kEmpty) {
                 return false;
             }
         }
