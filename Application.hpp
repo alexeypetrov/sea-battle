@@ -6,6 +6,7 @@
 namespace sea_battle {
 class Application {
    public:
+    inline static const int kMapSize = 500;
     explicit Application(const char* name);
     void Run(Game& game);
 

@@ -5,10 +5,10 @@ namespace sea_battle {
 Game::Game() {
     AddFields();
     m_font_.loadFromFile("../fonts/Ubuntu-Regular.ttf");
-    AddMenu("New game", 1100, 50);
-    AddMenu("Exit", 1100, 100);
-    m_player_1_.InitScorePlayer(m_font_, 50, 550);
-    m_player_2_.InitScorePlayer(m_font_, 600, 550);
+    AddMenu("New game", kBtnNewGameX, kBtnNewGameY);
+    AddMenu("Exit", kBtnExitX, kBtnExitY);
+    m_player_1_.InitScorePlayer(m_font_, kScorePlayer1X, kScorePlayer1Y);
+    m_player_2_.InitScorePlayer(m_font_, kScorePlayer2X, kScorePlayer2Y);
 }
 
 [[nodiscard]] auto Game::GetField1() const -> std::vector<sf::RectangleShape> {
@@ -33,11 +33,11 @@ Game::Game() {
 
 void Game::AddFields() {
     m_field_1_.clear();
-    for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 10; ++j) {
+    for (int i = 0; i < kRowLength; ++i) {
+        for (int j = 0; j < kColLength; ++j) {
             sf::RectangleShape box;
-            box.setPosition(i * 50, j * 50);
-            box.setSize(sf::Vector2f(50, 50));
+            box.setPosition(i * kFieldSize, j * kFieldSize);
+            box.setSize(sf::Vector2f(kFieldSize, kFieldSize));
             box.setFillColor(sf::Color::White);
             box.setOutlineColor(sf::Color::Blue);
             box.setOutlineThickness(1);
@@ -45,12 +45,13 @@ void Game::AddFields() {
         }
     }
     m_field_2_.clear();
-    for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 10; ++j) {
+    for (int i = 0; i < kRowLength; ++i) {
+        for (int j = 0; j < kColLength; ++j) {
             sf::RectangleShape box;
-            box.setPosition(i * 50 + 550, j * 50);
-            box.setSize(sf::Vector2f(50, 50));
-            if (m_player_2_.GetSeaMapFieldStatus(i * 10 + j) ==
+            box.setPosition(i * kFieldSize + kFieldSize * (kRowLength + 1),
+                            j * kFieldSize);
+            box.setSize(sf::Vector2f(kFieldSize, kFieldSize));
+            if (m_player_2_.GetSeaMapFieldStatus(i * kRowLength + j) ==
                 Status::kEmpty) {
                 box.setFillColor(sf::Color::White);
             } else {
@@ -68,13 +69,14 @@ void Game::AddMenu(const std::string& text, int xPosition, int yPosition) {
     menu_text.setFont(m_font_);
     menu_text.setPosition(xPosition, yPosition);
     menu_text.setString(text);
-    menu_text.setCharacterSize(25);
+    menu_text.setCharacterSize(kFontSize);
     menu_text.setFillColor(sf::Color::Green);
     m_menu_.push_back(menu_text);
 }
 
 void Game::ClickButton(int xPosition, int yPosition) {
-    int num = std::lround(xPosition / 50 * 10) + std::lround(yPosition / 50);
+    int num = std::lround(xPosition / kFieldSize * kRowLength) +
+              std::lround(yPosition / kFieldSize);
     if (m_player_1_.GetSeaMapFieldStatus(num) == Status::kKilled ||
         m_player_1_.GetSeaMapFieldStatus(num) == Status::kChecked) {
         return;

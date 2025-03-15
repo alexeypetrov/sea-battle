@@ -24,16 +24,19 @@ void Application::ProcessEvents(Game& game) {
         }
         if (event.type == sf::Event::MouseButtonPressed &&
             event.mouseButton.button == sf::Mouse::Left) {
-            if (event.mouseButton.x > 1100 && event.mouseButton.y > 50 &&
-                event.mouseButton.y < 75) {
+            if (event.mouseButton.x > Game::kBtnNewGameX &&
+                event.mouseButton.y > Game::kBtnNewGameY &&
+                event.mouseButton.y < Game::kBtnNewGameY + Game::kFontSize) {
                 game.Restart();
                 DrawGame(game);
             }
-            if (event.mouseButton.x > 1100 && event.mouseButton.y > 100 &&
-                event.mouseButton.y < 125) {
+            if (event.mouseButton.x > Game::kBtnExitX &&
+                event.mouseButton.y > Game::kBtnExitY &&
+                event.mouseButton.y < Game::kBtnExitY + Game::kFontSize) {
                 m_window_.close();
             }
-            if (event.mouseButton.x < 500 && event.mouseButton.y < 500) {
+            if (event.mouseButton.x < kMapSize &&
+                event.mouseButton.y < kMapSize) {
                 game.ClickButton(event.mouseButton.x, event.mouseButton.y);
                 DrawGame(game);
             }

@@ -3,11 +3,22 @@
 #include <cmath>
 #include <string>
 #include "Player.hpp"
-#include "SeaMap.hpp"
 
 namespace sea_battle {
 class Game {
    public:
+    inline static const int kRowLength = 10;
+    inline static const int kColLength = 10;
+    inline static const int kFieldSize = 50;
+    inline static const int kFontSize = 25;
+    inline static const int kBtnNewGameX = 1100;
+    inline static const int kBtnNewGameY = 50;
+    inline static const int kBtnExitX = 1100;
+    inline static const int kBtnExitY = 100;
+    inline static const int kScorePlayer1X = 50;
+    inline static const int kScorePlayer1Y = 550;
+    inline static const int kScorePlayer2X = 600;
+    inline static const int kScorePlayer2Y = 550;
     Game();
     [[nodiscard]] auto GetField1() const -> std::vector<sf::RectangleShape>;
     [[nodiscard]] auto GetField2() const -> std::vector<sf::RectangleShape>;
